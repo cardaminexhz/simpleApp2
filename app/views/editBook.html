@@ -1,0 +1,14 @@
+<div>
+    <div ng-style="{ backgroundImage: 'url(' + book.getImageUrl(100, 100) + ')' }"></div>
+    Id: <span ng-bind="book.id"></span>
+
+    Name:<input type="text" ng-model="book.name" />
+
+    Author: <input type="text" ng-model="book.author" />
+
+    Is Available: <span ng-bind="book.isAvailable() ? 'Yes' : 'No' "></span>
+
+    <button ng-click="book.delete()">Delete</button>
+
+    <button ng-click="book.update()">Update</button>
+</div>
