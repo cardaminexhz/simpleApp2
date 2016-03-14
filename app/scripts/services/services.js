@@ -25,7 +25,7 @@ services.factory('MultiResultsLoader', ['$http', '$q',
     }
 ]);
 
-// ��ȡ������¼
+// 获取单条记录
 services.factory('ResultLoader', ['$http', '$q', '$route', '$routeParams',
     function($http, $q, $route, $routeParams) {
         return function() {
@@ -57,6 +57,11 @@ services.factory('ResultLoader', ['$http', '$q', '$route', '$routeParams',
     }
 ]);
 
+/**
+ * [factory] step1. service
+ * 使用prototype来构造一个Result类，
+ * 将Result相关的所有行为都封装在Result服务内
+ */
 services.factory('Result', ['$http', '$q',
     function($http) {
         function Result(resultData) {
@@ -77,10 +82,25 @@ services.factory('Result', ['$http', '$q',
                     method: 'GET',
                     url: myUrl,
                     params: {category: category}
-                }).success(function(data) {
+                }).success(function(data, status) {
                     console.log(status);
                     scope.setData(data);
                 });
+            },
+            save: function(result) {
+                $http.post({
+                    method: 'POST',
+                    url: myUrl,
+                    params: {category: result.category, num: result.num}
+                }).success(function(data, status) {
+                    console.log(status);
+                });
+            },
+			delete: function(category) {
+                $http.delete(myUrl + "?category=" + category);
+            },
+            update: function(result) {
+                $http.put(myUrl + "?category=" + result.category + "&num=" +result.num, this);
             }
         };
         return Result;

@@ -1,6 +1,7 @@
 <h2>编辑</h2>
 <hr>
-<form name="msgForm" ng-submit="save()">
+<!-- [factory] step3. 改变模板使用Result的方法 -->
+<form name="msgForm" ng-submit="result.save(result)">
 
     <div class="control-group">
         <label class="control-label" for="name">类别:</label>
@@ -18,6 +19,6 @@
 
     <div class="form-actions">
         <button class="btn btn-primary" ng-disabled="msgForm.$invalid">保存</button>
-        <button class="btn btn-primary" ng-click="del()">删除</button>
+        <button class="btn btn-primary" ng-click="result.delete(result.category)">删除</button>
     </div>
 </form>
