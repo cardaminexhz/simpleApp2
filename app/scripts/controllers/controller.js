@@ -1,7 +1,7 @@
 'use strict';
 
 // 为simpleApp2创建一个模块
-var app = angular.module('simpleApp2', ['simpleApp2.services']);
+var app = angular.module('simpleApp2', ['simpleApp2.services', 'simpleApp2.directives']);
 
 // 定义路由规则，建立URLs，模板，控制器之间的映射关系
 app.config(['$routeProvider', function($routeProvider) {

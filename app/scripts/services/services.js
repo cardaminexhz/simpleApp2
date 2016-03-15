@@ -2,11 +2,12 @@
 
 var services = angular.module('simpleApp2.services', ['ngResource']);
 
+// 获取多条记录
 services.factory('MultiResultsLoader', ['$http', '$q',
     function($http, $q) {
         return function() {
             var results = {};
-            var myUrl = "http://localhost:8081/statistic";
+            var myUrl = "http://localhost:8081/statistic/list";
             var delay = $q.defer();
 
             $http.get(myUrl)
@@ -33,7 +34,7 @@ services.factory('ResultLoader', ['$http', '$q', '$route', '$routeParams',
             //console.log("in server:" + $routeParams.category);
 
             var result = {};
-            var myUrl = "http://localhost:8081/statistic";
+            var myUrl = "http://localhost:8081/statistic/list";
             var delay = $q.defer();
 
             $http({
@@ -62,45 +63,52 @@ services.factory('ResultLoader', ['$http', '$q', '$route', '$routeParams',
  * 使用prototype来构造一个Result类，
  * 将Result相关的所有行为都封装在Result服务内
  */
-services.factory('Result', ['$http', '$q',
-    function($http) {
+services.factory('Result', ['$http', '$q', '$location',
+    function($http, $location) {
         function Result(resultData) {
             // Some other initializations related to result
             if (resultData) {
                 this.setData(resultData);
             }
         };
-        var myUrl = "http://localhost:8081/statistic";
+        var myUrl = "http://localhost:8081/statistic/";
 
         Result.prototype = {
-            setData: function(bookData) {
-                angular.extend(this, bookData);
+            setData: function(data) {
+                angular.extend(this, data);
             },
             load: function(category) {
                 var scope = this;
                 $http({
                     method: 'GET',
-                    url: myUrl,
+                    url: myUrl + "list",
                     params: {category: category}
                 }).success(function(data, status) {
                     console.log(status);
                     scope.setData(data);
                 });
             },
-            save: function(result) {
-                $http.post({
+            save: function(result, $location) {
+                $http({
                     method: 'POST',
-                    url: myUrl,
+                    url: myUrl + "save",
                     params: {category: result.category, num: result.num}
                 }).success(function(data, status) {
-                    console.log(status);
+                    console.log(status + ": save success");
+                    $location.path = "/";
+                }).error(function(status) {
+                    console.log(status + ": save failure");
+                    $location.path("/");
                 });
             },
-			delete: function(category) {
-                $http.delete(myUrl + "?category=" + category);
+			delete: function(category, $location) {
+                $http.delete(myUrl + "delete?category=" + category).success(function(status) {
+                    console.log(status + ": delete success");
+                    $location.path("/");
+                });
             },
             update: function(result) {
-                $http.put(myUrl + "?category=" + result.category + "&num=" +result.num, this);
+                $http.put(myUrl + "save?category=" + result.category + "&num=" +result.num, this);
             }
         };
         return Result;
